@@ -12,7 +12,14 @@
 ```sh
 yarn
 ```
-
+本地开发启动后端
+```sh
+lean up --port 8081
+```
+或者不使用 leancloud
+```sh
+yarn dev
+```
 启动前端
 ```sh
 yarn dev:web

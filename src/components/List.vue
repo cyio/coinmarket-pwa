@@ -61,7 +61,7 @@ export default {
   created () {
     if (this.$route.name !== 'Post') {
       this.$bar.start()
-      fetch('https://bird.ioliu.cn/v1/?url=https://api.coinmarketcap.com/v1/ticker/?convert=CNY&limit=20').then(res => res.json()).then(data => {
+      fetch('/api/coinmarketcap').then(res => res.json()).then(data => {
         this.loading = false
         this.list = data
         this.$bar.finish()

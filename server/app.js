@@ -18,6 +18,17 @@ router.get('/api/allprices', async (ctx, next) => {
   ctx.body = await client.prices()
 })
 
+let dataCache
+setInterval(async () => {
+  dataCache = await axios
+    .get('https://api.coinmarketcap.com/v1/ticker/?convert=CNY&limit=20')
+    .then(res => res.data)
+}, 6000)
+
+router.get('/api/coinmarketcap', async (ctx, next) => {
+  ctx.body = dataCache
+})
+
 app
   .use(router.routes())
   .use(router.allowedMethods())
