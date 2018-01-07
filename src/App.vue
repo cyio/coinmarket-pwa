@@ -127,7 +127,7 @@ img, embed, iframe {
 
 @media only screen and (min-width: 900px) {
   #app .main {
-		width: 750px;
+		width: 450px;
 		border: 1px solid #efefef;
   }
   #app .main,

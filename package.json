@@ -21,6 +21,7 @@
     "koa2-connect-history-api-fallback": "^0.0.6",
     "leancloud-storage": "^3.4.2",
     "leanengine": "^3.0.2",
+    "numeral": "^2.0.6",
     "request": "^2.83.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"

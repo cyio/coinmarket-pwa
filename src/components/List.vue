@@ -6,22 +6,18 @@
       <span v-if="!loading">{{ list[0].last_updated | timeFormat }}</span>
     </div>
     <table class="table" id="products">
-      <colgroup style="width:10%;"></colgroup>
-      <colgroup style="width:30%;"></colgroup>
-      <colgroup style="width:30%;"></colgroup>
-      <colgroup style="width:30%;"></colgroup>
       <tbody>
         <tr class="headorder">
-          <th class="f-left">排名</th>
-          <th class="f-left">名称</th>
-          <th class="f-left">最新价</th>
-          <th class="f-left">24涨跌</th>
+          <th class="h-rank f-left">排名</th>
+          <th class="h-name f-left">名称</th>
+          <th class="h-price f-left">最新价 ¥</th>
+          <th class="h-change f-left">24涨跌</th>
         </tr>
         <tr v-for="item in list || skeletonList" class="item">
           <td v-if="!loading"><span>{{item.rank}}</span></td>
           <td v-if="!loading"><span>{{item.symbol}}</span></td>
-          <td v-if="!loading"><span>￥ {{item.price_cny | round}}</span></td>
-          <td v-if="!loading"><span v-bind:class="{'up': item.percent_change_24h >= 0, 'down': item.percent_change_24h < 0}" class="change">{{(item.percent_change_24h >=0 ? '+' : '') + item.percent_change_24h}}</span></td>
+          <td v-if="!loading" class="align-right"><span>{{item.price_cny | format}}</span></td>
+          <td v-if="!loading" class="align-right"><span v-bind:class="{'up': item.percent_change_24h >= 0, 'down': item.percent_change_24h < 0}" class="change">{{item.percent_change_24h | format}}%</span></td>
         </tr>
       </tbody>
     </table>
@@ -31,6 +27,7 @@
 
 <script>
 import mixin from '@/mixin.js'
+import numeral from 'numeral'
 export default {
   name: 'List',
   mixins: [mixin],
@@ -50,9 +47,10 @@ export default {
     }
   },
   filters: {
-    round (value) {
+    format (value) {
       if (!value) return ''
-      return (+value).toFixed(parseInt(value) / 100 < 1 ? 2 : 0)
+      return numeral(value).format('0,0.00')
+      // return (+value).toFixed(parseInt(value) / 100 < 1 ? 2 : 0)
     },
     timeFormat (time) {
       return (new Date(time * 1000)).toLocaleString()
@@ -115,13 +113,17 @@ export default {
     color: #a2a2a2;
   }
   .table {
-    width: 100%;
+    // width: 100%;
 		white-space: nowrap;
   }
   .table th {
   }
   .table td, .table th {
     text-indent: .05rem;
+  }
+  .align-right {
+		text-align: right;
+		transform: translateX(-10%);
   }
   .headorder .f-left {
     text-align: left;
@@ -137,5 +139,11 @@ export default {
   .change {
     width: .5rem;
     display: inline-block;
+  }
+  .h-name, .h-change {
+    width: .55rem;
+  }
+  .h-price {
+    width: 1rem;
   }
 </style>
