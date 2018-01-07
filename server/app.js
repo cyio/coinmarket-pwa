@@ -19,11 +19,13 @@ router.get('/api/allprices', async (ctx, next) => {
 })
 
 let dataCache
-setInterval(async () => {
-  dataCache = await axios
+const fetchCoinmarketcap = () => {
+  return axios
     .get('https://api.coinmarketcap.com/v1/ticker/?convert=CNY&limit=20')
-    .then(res => res.data)
-}, 6000)
+    .then(res => (dataCache = res.data))
+}
+fetchCoinmarketcap()
+setInterval(fetchCoinmarketcap, 6000)
 
 router.get('/api/coinmarketcap', async (ctx, next) => {
   ctx.body = dataCache
