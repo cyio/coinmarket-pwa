@@ -10,6 +10,7 @@ const history = require('koa2-connect-history-api-fallback')
 const Binance = require('binance-api-node')
 const client = Binance.default()
 client.time().then(time => console.log(time))
+axios.defaults.timeout = 1000
 
 const app = new Koa()
 const router = new Router()
@@ -23,7 +24,7 @@ const fetchCoinmarketcap = () => {
   axios
     .get('https://api.coinmarketcap.com/v1/ticker/?convert=CNY&limit=20')
     .then(res => (dataCache = res.data))
-    .catch(err => console.log(err))
+    .catch(() => {})
 }
 fetchCoinmarketcap()
 setInterval(fetchCoinmarketcap, 7000)
