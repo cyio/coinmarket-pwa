@@ -13,6 +13,7 @@
           <th class="h-price f-left">最新价 ¥</th>
           <th class="h-change f-left">24涨跌</th>
         </tr>
+        <div v-if="showError">请求超时，请稍后刷新重试</div>
         <tr v-for="item in list || skeletonList" class="item">
           <td v-if="!loading"><span>{{item.rank}}</span></td>
           <td v-if="!loading"><span>{{item.symbol}}</span></td>
@@ -28,12 +29,15 @@
 <script>
 import mixin from '@/mixin.js'
 import numeral from 'numeral'
+import axios from 'axios'
+axios.defaults.timeout = 1000
 export default {
   name: 'List',
   mixins: [mixin],
   data () {
     return {
       list: null,
+      showError: false,
       loading: true
     }
   },
@@ -57,19 +61,21 @@ export default {
     }
   },
   created () {
-    if (this.$route.name !== 'Post') {
-      this.$bar.start()
-      fetch('/api/coinmarketcap').then(res => res.json()).then(data => {
-        this.loading = false
-        this.list = data
-        this.$bar.finish()
-      })
-      // fetch('https://bird.ioliu.cn/v1/?url=https://www.binance.com/api/v1/ticker/allPrices').then(res => res.json()).then(data => {
-      // this.loading = false
-      // this.list = data
-      // this.$bar.finish()
-      // })
+    this.$bar.start()
+    const getCoinMarketCap = () => {
+      return axios.get('/api/coinmarketcap')
+        .then(res => {
+          this.loading = false
+          this.list = res.data
+          this.$bar.finish()
+        })
     }
+    getCoinMarketCap().catch(err => {
+      console.log(err)
+      getCoinMarketCap().catch(() => {
+        this.showError = true
+      })
+    })
   },
   mounted () {
   }

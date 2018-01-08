@@ -23,9 +23,10 @@ const fetchCoinmarketcap = () => {
   return axios
     .get('https://api.coinmarketcap.com/v1/ticker/?convert=CNY&limit=20')
     .then(res => (dataCache = res.data))
+    .catch(err => console.log(err))
 }
 fetchCoinmarketcap()
-setInterval(fetchCoinmarketcap, 6000)
+setInterval(fetchCoinmarketcap, 7000)
 
 router.get('/api/coinmarketcap', async (ctx, next) => {
   ctx.body = dataCache
