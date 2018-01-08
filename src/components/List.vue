@@ -30,6 +30,8 @@
 import mixin from '@/mixin.js'
 import numeral from 'numeral'
 import axios from 'axios'
+import Timeago from 'timeago.js'
+const timeAgo = new Timeago()
 axios.defaults.timeout = 1000
 export default {
   name: 'List',
@@ -57,7 +59,7 @@ export default {
       // return (+value).toFixed(parseInt(value) / 100 < 1 ? 2 : 0)
     },
     timeFormat (time) {
-      return (new Date(time * 1000)).toLocaleString()
+      return timeAgo.format(new Date(time * 1000), 'zh_CN')
     }
   },
   created () {

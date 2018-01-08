@@ -20,7 +20,7 @@ router.get('/api/allprices', async (ctx, next) => {
 
 let dataCache
 const fetchCoinmarketcap = () => {
-  return axios
+  axios
     .get('https://api.coinmarketcap.com/v1/ticker/?convert=CNY&limit=20')
     .then(res => (dataCache = res.data))
     .catch(err => console.log(err))

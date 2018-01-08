@@ -23,6 +23,7 @@
     "leanengine": "^3.0.2",
     "numeral": "^2.0.6",
     "request": "^2.83.0",
+    "timeago.js": "^3.0.2",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },
