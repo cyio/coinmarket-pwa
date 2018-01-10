@@ -10,15 +10,27 @@
         <tr class="headorder">
           <th class="h-rank f-left">排名</th>
           <th class="h-name f-left">名称</th>
-          <th class="h-price f-left">最新价 ¥</th>
-          <th class="h-change f-left">24涨跌</th>
+          <th class="h-price f-left">最新价 
+            <select v-model="selectedUnit" @change="setUnit">
+              <option value="cny">¥</option>
+              <option value="usd">$</option>
+              <option value="btc">Ƀ</option>
+            </select>
+          </th>
+          <th class="h-change f-left">涨跌
+            <select v-model="selectedChange" @change="setChange">
+              <option value="24h">24H</option>
+              <option value="1h">1H</option>
+              <option value="7d">7D</option>
+            </select>
+          </th>
         </tr>
         <div v-if="showError">请求超时，请稍后刷新重试</div>
-        <tr v-for="item in list || skeletonList" class="item">
-          <td v-if="!loading"><span>{{item.rank}}</span></td>
-          <td v-if="!loading"><span>{{item.symbol}}</span></td>
-          <td v-if="!loading" class="align-right"><span>{{item.price_cny | format}}</span></td>
-          <td v-if="!loading" class="align-right"><span v-bind:class="{'up': item.percent_change_24h >= 0, 'down': item.percent_change_24h < 0}" class="change">{{item.percent_change_24h | format}}%</span></td>
+        <tr v-if="!loading" v-for="item in list" class="item">
+          <td><span>{{item.rank}}</span></td>
+          <td><span>{{item.symbol}}</span></td>
+          <td class="align-right"><span>{{item[`price_${selectedUnit}`] | format(selectedUnit)}}</span></td>
+          <td class="align-right"><span v-bind:class="{'up': item[`percent_change_${selectedChange}`] >= 0, 'down': item[`percent_change_${selectedChange}`] < 0}" class="change">{{item[`percent_change_${selectedChange}`] | format}}%</span></td>
         </tr>
       </tbody>
     </table>
@@ -39,24 +51,26 @@ export default {
   data () {
     return {
       list: null,
+      selectedUnit: 'cny',
+      selectedChange: '24h',
       showError: false,
       loading: true
     }
   },
   methods: {
-  },
-  computed: {
-    skeletonList () {
-      const list = []
-      list.length = 25
-      return list
+    setUnit () {
+      localStorage.setItem('unit', this.selectedUnit)
+    },
+    setChange () {
+      localStorage.setItem('change', this.selectedChange)
     }
   },
+  computed: {
+  },
   filters: {
-    format (value) {
-      if (!value) return ''
+    format (value, unit) {
+      if (unit === 'btc') return value
       return numeral(value).format('0,0.00')
-      // return (+value).toFixed(parseInt(value) / 100 < 1 ? 2 : 0)
     },
     timeFormat (time) {
       return timeAgo.format(new Date(time * 1000), 'zh_CN')
@@ -67,8 +81,8 @@ export default {
     const getCoinMarketCap = () => {
       return axios.get('/api/coinmarketcap')
         .then(res => {
-          this.loading = false
           this.list = res.data
+          this.loading = false
           this.$bar.finish()
         })
     }
@@ -78,6 +92,14 @@ export default {
         this.showError = true
       })
     })
+    let unit = localStorage.getItem('unit')
+    let change = localStorage.getItem('change')
+    if (unit) {
+      this.selectedUnit = unit
+    }
+    if (change) {
+      this.selectedChange = change
+    }
   },
   mounted () {
   }
@@ -146,10 +168,12 @@ export default {
   }
   .change {
     width: .5rem;
-    display: inline-block;
   }
-  .h-name, .h-change {
+  .h-name {
     width: .55rem;
+  }
+  .h-change {
+    width: .7rem;
   }
   .h-price {
     width: 1rem;
