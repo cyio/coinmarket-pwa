@@ -5,7 +5,7 @@
   "author": "cyio <icaner@qq.com>",
   "private": true,
   "scripts": {
-    "dev": "nodemon server",
+    "dev": "nodemon --watch server server/index.js",
     "dev:web": "node build/dev-server.js",
     "start": "node server",
     "build": "node build/build.js",
@@ -25,6 +25,7 @@
     "request": "^2.83.0",
     "timeago.js": "^3.0.2",
     "vue": "^2.5.2",
+    "vue-i18n": "^7.4.0",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {

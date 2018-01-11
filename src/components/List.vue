@@ -2,22 +2,22 @@
 <div class="home-view">
   <div class="list">
     <div class="info">
-      更新时间：
+      {{$t('list.updateTime')}}：
       <span v-if="!loading">{{ list[0].last_updated | timeFormat }}</span>
     </div>
     <table class="table" id="products">
       <tbody>
         <tr class="headorder">
-          <th class="h-rank f-left">排名</th>
-          <th class="h-name f-left">名称</th>
-          <th class="h-price f-left">最新价 
+          <th class="h-rank f-left">{{$t('list.rank')}}</th>
+          <th class="h-name f-left">{{$t('list.symbol')}}</th>
+          <th class="h-price f-left">{{$t('list.price')}}
             <select v-model="selectedUnit" @change="setUnit">
               <option value="cny">¥</option>
               <option value="usd">$</option>
               <option value="btc">Bits</option>
             </select>
           </th>
-          <th class="h-change f-left">涨跌
+          <th class="h-change f-left">{{$t('list.change')}}
             <select v-model="selectedChange" @change="setChange">
               <option value="24h">24H</option>
               <option value="1h">1H</option>
@@ -25,7 +25,7 @@
             </select>
           </th>
         </tr>
-        <div v-if="showError">请求超时，请稍后刷新重试</div>
+        <div v-if="showError"></div>
         <tr v-if="!loading" v-for="item in list" class="item">
           <td><span>{{item.rank}}</span></td>
           <td><span>{{item.symbol}}</span></td>
@@ -73,7 +73,8 @@ export default {
       return numeral(value).format('0,0.00')
     },
     timeFormat (time) {
-      return timeAgo.format(new Date(time * 1000), 'zh_CN')
+      const locale = /zh/.test(window.navigator.language) ? 'zh_CN' : 'en_US'
+      return timeAgo.format(new Date(time * 1000), locale)
     }
   },
   created () {
