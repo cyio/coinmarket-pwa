@@ -8,6 +8,10 @@ import VueI18n from 'vue-i18n'
 Vue.config.productionTip = false
 Vue.use(VueI18n)
 
+const shared = {
+  isZh: /zh/.test(window.navigator.language)
+}
+
 const translations = {
   zh: {
     list: {
@@ -32,13 +36,16 @@ const translations = {
 }
 
 const i18n = new VueI18n({
-  locale: /zh/.test(window.navigator.language) ? 'zh' : 'en',
+  locale: shared.isZh ? 'zh' : 'en',
   messages: translations
 })
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  data: {
+    shared
+  },
   router,
   i18n,
   template: '<App/>',

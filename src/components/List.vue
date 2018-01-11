@@ -3,7 +3,7 @@
   <div class="list">
     <div class="info">
       {{$t('list.updateTime')}}：
-      <span v-if="!loading">{{ list[0].last_updated | timeFormat }}</span>
+      <span v-if="!loading">{{ list[0].last_updated | timeFormat(locale) }}</span>
     </div>
     <table class="table" id="products">
       <tbody>
@@ -51,7 +51,7 @@ export default {
   data () {
     return {
       list: null,
-      selectedUnit: 'cny',
+      selectedUnit: this.$root.$data.shared.isZh ? 'cny' : 'usd',
       selectedChange: '24h',
       showError: false,
       loading: true
@@ -66,14 +66,16 @@ export default {
     }
   },
   computed: {
+    locale () {
+      return this.$root.$data.shared.isZh ? 'zh_CN' : 'en_US'
+    }
   },
   filters: {
     format (value, unit) {
       if (unit === 'btc') return numeral(value * 10 ** 6).format('0,000,000.00')
       return numeral(value).format('0,0.00')
     },
-    timeFormat (time) {
-      const locale = /zh/.test(window.navigator.language) ? 'zh_CN' : 'en_US'
+    timeFormat (time, locale) {
       return timeAgo.format(new Date(time * 1000), locale)
     }
   },
