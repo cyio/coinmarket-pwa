@@ -14,7 +14,7 @@
             <select v-model="selectedUnit" @change="setUnit">
               <option value="cny">¥</option>
               <option value="usd">$</option>
-              <option value="btc">Ƀ</option>
+              <option value="btc">Bits</option>
             </select>
           </th>
           <th class="h-change f-left">涨跌
@@ -69,7 +69,7 @@ export default {
   },
   filters: {
     format (value, unit) {
-      if (unit === 'btc') return value
+      if (unit === 'btc') return numeral(value * 10 ** 6).format('0,000,000.00')
       return numeral(value).format('0,0.00')
     },
     timeFormat (time) {
