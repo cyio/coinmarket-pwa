@@ -44,7 +44,7 @@ import numeral from 'numeral'
 import axios from 'axios'
 import Timeago from 'timeago.js'
 const timeAgo = new Timeago()
-axios.defaults.timeout = 1000
+axios.defaults.timeout = 5000
 export default {
   name: 'List',
   mixins: [mixin],
@@ -77,10 +77,11 @@ export default {
     }
   },
   created () {
-    this.$bar.start()
     const getCoinMarketCap = () => {
+      this.$bar.start()
       return axios.get('/api/coinmarketcap')
         .then(res => {
+          // console.log(res)
           this.list = res.data
           this.loading = false
           this.$bar.finish()
@@ -88,6 +89,7 @@ export default {
     }
     getCoinMarketCap().catch(err => {
       console.log(err)
+      // 请求失败后，再试一次
       getCoinMarketCap().catch(() => {
         this.showError = true
       })
