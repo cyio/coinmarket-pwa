@@ -20,7 +20,9 @@ const translations = {
       symbol: '名称',
       price: '最新价',
       change: '涨跌',
-      error: '请求超时，请稍后刷新重试'
+      error: '请求超时，请稍后刷新重试',
+      totalMarketCap: '总市值',
+      btcDominance: 'BTC占比'
     }
   },
   en: {
@@ -30,7 +32,9 @@ const translations = {
       symbol: 'Symbol',
       price: 'Price',
       change: 'Change',
-      error: 'Timeout, please retry'
+      error: 'Timeout, please retry',
+      totalMarketCap: 'Market Cap',
+      btcDominance: 'BTC Dominance'
     }
   }
 }

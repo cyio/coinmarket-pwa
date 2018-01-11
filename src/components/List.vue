@@ -2,8 +2,12 @@
 <div class="home-view">
   <div class="list">
     <div class="info">
+      {{$t('list.totalMarketCap')}}:
+      <span v-if="!loading">{{totalMarketCap}}</span> /
+      {{$t('list.btcDominance')}}:
+      <span v-if="!loading">{{global.bitcoin_percentage_of_market_cap}}%</span> /
       {{$t('list.updateTime')}}：
-      <span v-if="!loading">{{ list[0].last_updated | timeFormat(locale) }}</span>
+      <span v-if="!loading">{{ global.last_updated | timeFormat(locale) }}</span>
     </div>
     <table class="table" id="products">
       <tbody>
@@ -12,8 +16,8 @@
           <th class="h-name f-left">{{$t('list.symbol')}}</th>
           <th class="h-price f-left">{{$t('list.price')}}
             <select v-model="selectedUnit" @change="setUnit">
-              <option value="cny">¥</option>
               <option value="usd">$</option>
+              <option value="cny">¥</option>
               <option value="btc">Bits</option>
             </select>
           </th>
@@ -26,7 +30,7 @@
           </th>
         </tr>
         <div v-if="showError"></div>
-        <tr v-if="!loading" v-for="item in list" class="item">
+        <tr v-if="!loading" v-for="item in tickers" class="item">
           <td><span>{{item.rank}}</span></td>
           <td><span>{{item.symbol}}</span></td>
           <td class="align-right"><span>{{item[`price_${selectedUnit}`] | format(selectedUnit)}}</span></td>
@@ -50,7 +54,8 @@ export default {
   mixins: [mixin],
   data () {
     return {
-      list: null,
+      tickers: null,
+      global: null,
       selectedUnit: this.$root.$data.shared.isZh ? 'cny' : 'usd',
       selectedChange: '24h',
       showError: false,
@@ -68,6 +73,17 @@ export default {
   computed: {
     locale () {
       return this.$root.$data.shared.isZh ? 'zh_CN' : 'en_US'
+    },
+    totalMarketCap () {
+      const caps = {
+        'cny': '¥' + numeral(this.global.total_market_cap_cny / (10 ** 8)).format('0,000.00') + '亿',
+        'usd': '$' + numeral(this.global.total_market_cap_usd / (10 ** 9)).format('0,000.00') + 'B'
+      }
+      if (/cny|usd/.test(this.selectedUnit)) {
+        return caps[this.selectedUnit]
+      } else {
+        return caps[this.$root.$data.shared.isZh ? 'cny' : 'usd']
+      }
     }
   },
   filters: {
@@ -85,7 +101,8 @@ export default {
       return axios.get('/api/coinmarketcap')
         .then(res => {
           // console.log(res)
-          this.list = res.data
+          this.tickers = res.data.tickers
+          this.global = res.data.global
           this.loading = false
           this.$bar.finish()
         })
@@ -142,10 +159,12 @@ export default {
 		font-size: .12rem;
   }
   .info {
-    margin-left: .1rem;
+    margin-left: .05rem;
     font-size: .12rem;
-    padding: 2px;
     color: #a2a2a2;
+  }
+  .info span {
+    color: var(--theme)
   }
   .table {
     // width: 100%;
