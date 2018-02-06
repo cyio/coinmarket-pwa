@@ -1,0 +1,12 @@
+{
+	"name": "coinmarket",
+	"script": "./server/index.js",
+	"cwd":"./",
+	"watch":[
+		"server"
+	],
+	"ignore_watch" : [
+		"node_modules", 
+		"dist"
+	] 
+}
