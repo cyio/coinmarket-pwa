@@ -1,0 +1,27 @@
+branches:
+  only:
+  - master
+language: node_js
+sudo: false
+node_js: stable
+cache:
+  directories:
+  - node_modules
+before_install:
+- git config --global user.name "cyio"
+- git config --global user.email "ibeceo@gmail.com"
+- git clone --branch gh-pages https://github.com/cyio/coinmarket-pwa.git dist
+install:
+- npm install
+script:
+- npm run build
+after_script:
+- cd dist
+- cp index.html 404.html
+- git add --all .
+- git commit --message "auto deploy"
+- git push "https://cyio:${GITHUB_TOKEN}@${GH_REF}" gh-pages:gh-pages
+env:
+  global:
+  - GH_REF: github.com/cyio/coinmarket-pwa.git
+  - secure: hFuhBojEuprqm2LxFOlByuqG3aL/FFveZ+rlLadJpj1BOAonrncmMK9OwHkJX+crVelN35J9ayDy5/fjICus1eDyES1FIzF/UZxPkqCp+eDfhElRhMVPO3yNhnDisvYymhFli1VIGk+ghLlsyqWsn0RDfx6CiovcJiXTqS4ZQSRxB/0DirJe4mo3JpnXAqqmdgeUCVw6WqDpLT/zLDOGhORTrzUhANn2+4kdW7eMd6zNNAKpU+JClejdFRQ5EPHIxU20y3mM/o9zdsdUkowbxNvC8tzf7cWxJhACbbNe/NcAH8TIM+BahNpGTd/zrOE1Pc1jxKW3WH1pcOtq6xekMjaIb8GPC5PvesGigI5vAdyfCfiYCr3sbyl7udH+3oS7/iPuDaPycoH0wdE0X+cKs0lUisSOpHQsI/IVVCB9u0tcYvkePSRj7PIB4ZywldoTPVzGU/RMufkEEpZGOVbquaY4jV3MIonE+Et0TWlJK9eIuxPBcH1cz9fkY58ZlBbzpWV6++jWRIplGz2P9X7DkF2GdXXj1g+U0JgKZj7P6ByvUo6V7wG9aOoq6qO11EuzQUcyPElRs5QxTnn/vqco7+5z0dHuyWzHClcQScTDFagq7u6m4nK06mzzED1xUBjYFak2aNNAFpf2s3dwU6MauodpB7ICE7kSabBbSITiRQc=

@@ -7,9 +7,10 @@ const history = require('koa2-connect-history-api-fallback')
 // const Binance = require('binance-api-node')
 // const client = Binance.default()
 // client.time().then(time => console.log(time))
+let cloudData
 if (process.env.LEANCLOUD_APP_ID) {
   const AV = require('leanengine')
-  const cloudData = AV.Object.createWithoutData('Data', '5a5c5c71ac502e0042f62b60')
+  cloudData = AV.Object.createWithoutData('Data', '5a5c5c71ac502e0042f62b60')
 }
 
 const app = new Koa()
