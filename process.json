@@ -6,7 +6,6 @@
 		"server"
 	],
 	"ignore_watch" : [
-		"node_modules", 
-		"dist"
-	] 
+	],
+	"max_memory_restart": "100M"
 }

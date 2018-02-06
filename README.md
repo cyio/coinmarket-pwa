@@ -1,31 +1,36 @@
 # coinmarket-pwa
 
-线上访问：[CoinMarket Lite](http://coin.leanapp.cn/)
+Live site://coin.leanapp.cn/)
 
-## 说明
+## Development
 
-* 前端由[vuejs-templates/pwa](https://github.com/vuejs-templates/pwa) 创建，基于这个目录结构改造支持 leancloud 部署
-
-## 开发
-
-安装依赖，在项目根目录下 
+install dependencies
 ```sh
-yarn
+npm install
 ```
-本地开发启动后端
+run backend
 ```sh
-lean up --port 8081
+lean up
+# or not use leancloud
+npm run dev
 ```
-或者不使用 leancloud
+run frontend
 ```sh
-yarn dev
-```
-启动前端
-```sh
-yarn dev:web
+npm run dev:web
 ```
 
-## 部署
+## Deploy
+build frontend
+```sh
+npm run build
+```
+then 
 ```sh
 lean deploy
+# or not use leancloud, deploy to your server and run
+npm run start
+```
+process manage
+```sh
+pm2 start process.json
 ```
