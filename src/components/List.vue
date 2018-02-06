@@ -48,7 +48,6 @@ import numeral from 'numeral'
 import axios from 'axios'
 import Timeago from 'timeago.js'
 const timeAgo = new Timeago()
-axios.defaults.timeout = 5000
 export default {
   name: 'List',
   mixins: [mixin],

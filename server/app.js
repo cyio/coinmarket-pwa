@@ -10,7 +10,10 @@ const history = require('koa2-connect-history-api-fallback')
 const Binance = require('binance-api-node')
 const client = Binance.default()
 client.time().then(time => console.log(time))
-// axios.defaults.timeout = 5000
+const AV = require('leanengine')
+if (process.env.LEANCLOUD_APP_ID) {
+  const cloudData = AV.Object.createWithoutData('Data', '5a5c5c71ac502e0042f62b60')
+}
 
 const app = new Koa()
 const router = new Router()
@@ -31,17 +34,23 @@ const fetchCoinmarketcap = () => {
         tickers: res1.data,
         global: res2.data
       }
+
+      // let data = new Data()
+      if (process.env.LEANCLOUD_APP_ID) {
+        cloudData.set('content', dataCache)
+        cloudData.save().then((res) => {
+          console.log('save to cloud: ', res.id)
+        }).catch((error) => {console.log(error)})
+      }
     }))
     .catch((error) => {console.log(error)})
 }
-// fetchCoinmarketcap()
-setInterval(fetchCoinmarketcap, 7000)
+
+fetchCoinmarketcap()
+setInterval(fetchCoinmarketcap, 1000 * 60 * 3)
 
 router.get('/api/coinmarketcap', async (ctx, next) => {
-  if (!dataCache) {
-    await fetchCoinmarketcap()
-  }
-  ctx.body = dataCache
+  ctx.body = dataCache || await fetchCoinmarketcap()
 })
 
 app
