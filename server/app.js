@@ -2,25 +2,22 @@ const Koa = require('koa')
 const Router = require('koa-router')
 const statics = require('koa-static')
 const axios = require('axios')
-const cheerio = require('cheerio')
 const path = require('path')
-const url = require('url')
-const request = require('request')
 const history = require('koa2-connect-history-api-fallback')
-const Binance = require('binance-api-node')
-const client = Binance.default()
-client.time().then(time => console.log(time))
-const AV = require('leanengine')
+// const Binance = require('binance-api-node')
+// const client = Binance.default()
+// client.time().then(time => console.log(time))
 if (process.env.LEANCLOUD_APP_ID) {
+  const AV = require('leanengine')
   const cloudData = AV.Object.createWithoutData('Data', '5a5c5c71ac502e0042f62b60')
 }
 
 const app = new Koa()
 const router = new Router()
 
-router.get('/api/allprices', async (ctx, next) => {
-  ctx.body = await client.prices()
-})
+// router.get('/api/allprices', async (ctx, next) => {
+  // ctx.body = await client.prices()
+// })
 
 let dataCache
 const fetchCoinmarketcap = () => {
