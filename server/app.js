@@ -1,5 +1,6 @@
 const Koa = require('koa'),
   Router = require('koa-router'),
+  fs = require('fs'),
   statics = require('koa-static'),
   axios = require('axios'),
   path = require('path'),
@@ -14,8 +15,18 @@ if (process.env.LEANCLOUD_APP_ID) {
   cloudData = AV.Object.createWithoutData('Data', '5a5c5c71ac502e0042f62b60')
 }
 
+const isDevEnv = process.env.NODE_ENV === 'development'
+const httpsOptions = !isDevEnv && {
+  email: 'ibeceo@gmail.com',
+  agreeTos: true,
+  key: fs.readFileSync(path.resolve(__dirname, '../privkey.pem')),
+  cert: fs.readFileSync(path.resolve(__dirname, '../fullchain.pem'))
+};
 const app = new Koa()
-const socket = websockify(app)
+const socket = isDevEnv
+  ? websockify(app)
+  // : websockify(app, {}, le.httpsOptions)
+  : websockify(app, {}, httpsOptions)
 const router = new Router()
 const ws = new Router()
 
