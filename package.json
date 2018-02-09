@@ -5,7 +5,7 @@
   "author": "cyio <icaner@qq.com>",
   "private": true,
   "scripts": {
-    "dev": "nodemon --inspect --watch server server/index.js",
+    "dev": "NODE_ENV=development nodemon --inspect --watch server server/index.js",
     "dev:web": "node build/dev-server.js",
     "start": "node server",
     "build": "node build/build.js",
@@ -14,11 +14,11 @@
   "dependencies": {
     "axios": "^0.17.1",
     "binance-api-node": "^0.4.3",
-    "koa": "^2.3.0",
-    "koa-router": "^7.3.0",
+    "koa": "^2.4.1",
+    "koa-router": "^7.4.0",
     "koa-static": "^4.0.2",
     "koa-websocket": "^4.1.0",
-    "koa2-connect-history-api-fallback": "^0.0.6",
+    "koa2-connect-history-api-fallback": "0.0.6",
     "leancloud-storage": "^3.4.2",
     "leanengine": "^3.0.2",
     "numeral": "^2.0.6",
