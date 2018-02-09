@@ -7,7 +7,7 @@
       {{$t('list.btcDominance')}}:
       <span v-if="!loading">{{global.bitcoin_percentage_of_market_cap}}%</span> /
       {{$t('list.updateTime')}}：
-      <span v-if="!loading">{{ global.last_updated | timeFormat(locale) }}</span>
+      <span v-if="!loading">{{ lastUpdated | timeFormat(locale) }}</span>
     </div>
     <table class="table" id="products">
       <tbody>
@@ -45,7 +45,7 @@
 <script>
 import mixin from '@/mixin.js'
 import numeral from 'numeral'
-import axios from 'axios'
+// import axios from 'axios'
 import Timeago from 'timeago.js'
 const timeAgo = new Timeago()
 export default {
@@ -57,11 +57,16 @@ export default {
       global: null,
       selectedUnit: this.$root.$data.shared.isZh ? 'cny' : 'usd',
       selectedChange: '24h',
+      lastUpdated: new Date(),
       showError: false,
       loading: true
     }
   },
   methods: {
+    setData (data) {
+      this.tickers = data.tickers
+      this.global = data.global
+    },
     setUnit () {
       localStorage.setItem('unit', this.selectedUnit)
     },
@@ -91,28 +96,11 @@ export default {
       return numeral(value).format('0,0.00')
     },
     timeFormat (time, locale) {
-      return timeAgo.format(new Date(time * 1000), locale)
+      // return timeAgo.format(new Date(time * 1000), locale)
+      return timeAgo.format(time, locale)
     }
   },
   created () {
-    const getCoinMarketCap = () => {
-      this.$bar.start()
-      return axios.get('/api/coinmarketcap')
-        .then(res => {
-          // console.log(res)
-          this.tickers = res.data.tickers
-          this.global = res.data.global
-          this.loading = false
-          this.$bar.finish()
-        })
-    }
-    getCoinMarketCap().catch(err => {
-      console.log(err)
-      // 请求失败后，再试一次
-      getCoinMarketCap().catch(() => {
-        this.showError = true
-      })
-    })
     let unit = localStorage.getItem('unit')
     let change = localStorage.getItem('change')
     if (unit) {
@@ -121,18 +109,37 @@ export default {
     if (change) {
       this.selectedChange = change
     }
+    let wsUrl = 'ws://' + window.location.host
+    if (window.location.hostname === 'localhost') {
+      wsUrl = 'ws://localhost:8083'
+    }
+    const ws = new WebSocket(wsUrl)
+    this.$bar.start()
+    ws.onopen = (event) => {
+      this.$bar.finish()
+      console.log('websocket on open')
+    }
+    ws.onmessage = (message) => {
+      console.log('ws msg', JSON.parse(message.data))
+      this.loading = false
+      this.setData(JSON.parse(message.data))
+      this.lastUpdated = new Date()
+    }
   },
   mounted () {
   }
 }
 </script>
 
-<style>
+  <style>
+  .home-view {
+    margin: 0 auto;
+    min-height: 500px;
+  }
   .list .item {
     position: relative;
-    height: .3rem;
-    line-height: .3rem;
-    padding: 5px;
+    height: 2rem;
+    line-height: 2rem;
   }
   .list .item .link {
     color: #333;
@@ -154,13 +161,12 @@ export default {
   }
   .headorder {
     background: #e0e9f3;
-    height: .25rem;
-		font-size: .12rem;
+    height: 2rem;
   }
   .info {
-    margin-left: .05rem;
-    font-size: .12rem;
+		margin: .4rem;
     color: #a2a2a2;
+    font-size: .9rem;
   }
   .info span {
     color: var(--theme)
@@ -172,7 +178,7 @@ export default {
   .table th {
   }
   .table td, .table th {
-    text-indent: .05rem;
+    text-indent: .5rem;
   }
   .align-right {
 		text-align: right;

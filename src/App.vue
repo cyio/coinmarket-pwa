@@ -6,7 +6,7 @@
         <span class="sub">Lite</span>
     </div>
   </header>
-  <div class="main">
+  <div class="container">
     <keep-alive>
       <router-view v-if="$route.meta.keepAlive" />
     </keep-alive>
@@ -44,50 +44,34 @@ ul {
 
 :root {
 	--theme: #32669a;
-	--headerHeight: .44rem;
+	--headerHeight: 3rem;
 }
 
 body {
   margin: 0;
-  font-size: .13rem;
 }
 
 #app {
-  padding-top: var(--headerHeight);
-}
-
-
-p {
-  line-height: .22rem;
-}
-
-.main {
-  // padding: .1rem;
-	margin-top: .03rem;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
-  min-height: 500px;
+	min-height: 100%;
+	display: grid;
+	grid-template-rows: auto 1fr auto;
+	grid-template-columns: 100%;
 }
 
 header {
-  margin: 0;
-  height: var(--headerHeight);
-  line-height: var(--headerHeight);
-  padding: 0 .05rem;
-  position: fixed;
-  top: 0;
-  width: 100%;
   z-index: 1000;
-  border-bottom: 1px solid #b2b2b2;
-	background-color: #fff;
-	color: var(--theme);
+  background-color: #fff;
+  color: var(--theme);
   box-shadow: 0 0 4px #657786;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  height: var(--headerHeight)
 }
 
 header .title {
-  // width: 2rem;
-  font-size: .28rem;
-	margin-left: .10rem;
+	font-size: 2rem;
 }
 
 header .title .sub {
@@ -126,11 +110,11 @@ img, embed, iframe {
 }
 
 @media only screen and (min-width: 900px) {
-  #app .main {
+  #app .container {
 		width: 450px;
 		border: 1px solid #efefef;
   }
-  #app .main,
+  #app .container,
   #app header .title {
 		margin-left: 150px;
   }
@@ -140,6 +124,7 @@ img, embed, iframe {
 	position: relative;
 	cursor: pointer;
 	transition: all 0.4s ease-in;
+	-webkit-user-select: none;
 }
 .link:before {
 	content: '';

@@ -1,9 +1,10 @@
-const Koa = require('koa')
-const Router = require('koa-router')
-const statics = require('koa-static')
-const axios = require('axios')
-const path = require('path')
-const history = require('koa2-connect-history-api-fallback')
+const Koa = require('koa'),
+  Router = require('koa-router'),
+  statics = require('koa-static'),
+  axios = require('axios'),
+  path = require('path'),
+  history = require('koa2-connect-history-api-fallback'),
+  websockify = require('koa-websocket');
 // const Binance = require('binance-api-node')
 // const client = Binance.default()
 // client.time().then(time => console.log(time))
@@ -14,7 +15,9 @@ if (process.env.LEANCLOUD_APP_ID) {
 }
 
 const app = new Koa()
+const socket = websockify(app)
 const router = new Router()
+const ws = new Router()
 
 // router.get('/api/allprices', async (ctx, next) => {
   // ctx.body = await client.prices()
@@ -51,10 +54,24 @@ router.get('/api/coinmarketcap', async (ctx, next) => {
   ctx.body = dataCache || await fetchCoinmarketcap()
 })
 
+ws.all('/*', async (ctx, next) => {
+	console.log('connected websocket')
+  ctx.websocket.send(JSON.stringify(dataCache))
+  setInterval(() => {
+    ctx.websocket.send(JSON.stringify(dataCache))
+  }, 1000 * 60 * 4)
+})
+
 app
   .use(router.routes())
   .use(router.allowedMethods())
   .use(history({whkteList: ['/api']}))
   .use(statics(path.join(__dirname, '../dist')))
+
+app.ws.use(ws.routes()).use(ws.allowedMethods())
+
+function sleep(ms = 0) {
+  return new Promise((resolve, reject) => setTimeout(resolve, ms));
+}
 
 module.exports = app

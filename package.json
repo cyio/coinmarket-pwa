@@ -17,6 +17,7 @@
     "koa": "^2.3.0",
     "koa-router": "^7.3.0",
     "koa-static": "^4.0.2",
+    "koa-websocket": "^4.1.0",
     "koa2-connect-history-api-fallback": "^0.0.6",
     "leancloud-storage": "^3.4.2",
     "leanengine": "^3.0.2",

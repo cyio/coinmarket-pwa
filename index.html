@@ -25,24 +25,6 @@
         for (var file of chunk.files) {
           if (file.match(/\.(js|css)$/)) { %>
     <link rel="<%= chunk.initial?'preload':'prefetch' %>" href="<%= htmlWebpackPlugin.files.publicPath + file %>" as="<%= file.match(/\.css$/)?'style':'script' %>"><% }}} %>
-		<script type="text/javascript">
-      (function() {
-          document.documentElement.style.webkitTouchCallout='none';
-          document.documentElement.style.webkitUserSelect='none';
-          document.addEventListener('DOMContentLoaded', function() {
-              var html = document.documentElement;
-              var windowWidth = html.clientWidth;
-              html.style.fontSize = windowWidth < 750
-                ? windowWidth / 3.2 + 'px'
-                : '140px';
-              // 等价于html.style.fontSize = windowWidth / 640 * 100 + 'px';
-          }, false);
-          var debug = localStorage.getItem('debug')
-          if (debug === 'true' && eruda !== 'undefined') {
-            eruda.init()
-          }
-      })();
-		</script>
   </head>
   <body>
     <noscript>
