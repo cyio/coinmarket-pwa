@@ -1,5 +1,6 @@
 const Koa = require('koa'),
   Router = require('koa-router'),
+  fs = require('fs'),
   statics = require('koa-static'),
   axios = require('axios'),
   path = require('path'),
@@ -18,16 +19,20 @@ if (process.env.LEANCLOUD_APP_ID) {
 const le = greenlock.create({
   // set to https://acme-v01.api.letsencrypt.org/directory1 in production
   server: 'staging',
-  challengeType: 'http-01',
-  domains: ['coin.bch123.org'],
   email: 'ibeceo@gmail.com',
-  agreeTos: true
+  agreeTos: true,
+  approvedDomains: ['coin.bch123.org']
 })
+const httpsOptions = {
+  key: fs.readFileSync(path.resolve(__dirname, '../privkey.pem')),
+  cert: fs.readFileSync(path.resolve(__dirname, '../cert.pem'))
+};
 const app = new Koa()
 const isDevEnv = process.env.NODE_ENV === 'development'
 const socket = isDevEnv
   ? websockify(app)
-  : websockify(app, {}, le.httpsOptions)
+  // : websockify(app, {}, le.httpsOptions)
+  : websockify(app, {}, httpsOptions)
 const router = new Router()
 const ws = new Router()
 
