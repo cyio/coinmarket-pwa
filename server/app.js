@@ -17,15 +17,17 @@ if (process.env.LEANCLOUD_APP_ID) {
 }
 
 const le = greenlock.create({
-  // set to https://acme-v01.api.letsencrypt.org/directory1 in production
-  server: 'staging',
+  // server: 'staging',
+  server: 'https://acme-v01.api.letsencrypt.org/directory1',
   email: 'ibeceo@gmail.com',
   agreeTos: true,
   approvedDomains: ['coin.bch123.org']
 })
 const httpsOptions = {
+  email: 'ibeceo@gmail.com',
+  agreeTos: true,
   key: fs.readFileSync(path.resolve(__dirname, '../privkey.pem')),
-  cert: fs.readFileSync(path.resolve(__dirname, '../cert.pem'))
+  cert: fs.readFileSync(path.resolve(__dirname, '../fullchain.pem'))
 };
 const app = new Koa()
 const isDevEnv = process.env.NODE_ENV === 'development'
