@@ -109,7 +109,7 @@ export default {
     if (change) {
       this.selectedChange = change
     }
-    let wsUrl = 'ws://' + window.location.host
+    let wsUrl = 'wss://' + window.location.host
     if (window.location.hostname === 'localhost') {
       wsUrl = 'ws://localhost:8083'
     }

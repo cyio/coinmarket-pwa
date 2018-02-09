@@ -4,6 +4,7 @@ const Koa = require('koa'),
   axios = require('axios'),
   path = require('path'),
   history = require('koa2-connect-history-api-fallback'),
+  greenlock = require('greenlock-express'),
   websockify = require('koa-websocket');
 // const Binance = require('binance-api-node')
 // const client = Binance.default()
@@ -14,8 +15,16 @@ if (process.env.LEANCLOUD_APP_ID) {
   cloudData = AV.Object.createWithoutData('Data', '5a5c5c71ac502e0042f62b60')
 }
 
+const le = greenlock.create({
+  // set to https://acme-v01.api.letsencrypt.org/directory1 in production
+  server: 'staging',
+  challengeType: 'http-01',
+  domains: ['coin.bch123.org'],
+  email: 'ibeceo@gmail.com',
+  agreeTos: true
+})
 const app = new Koa()
-const socket = websockify(app)
+const socket = websockify(app, {}, le.httpsOptions)
 const router = new Router()
 const ws = new Router()
 
