@@ -24,7 +24,10 @@ const le = greenlock.create({
   agreeTos: true
 })
 const app = new Koa()
-const socket = websockify(app, {}, le.httpsOptions)
+const isDevEnv = process.env.NODE_ENV === 'development'
+const socket = isDevEnv
+  ? websockify(app)
+  : websockify(app, {}, le.httpsOptions)
 const router = new Router()
 const ws = new Router()
 
