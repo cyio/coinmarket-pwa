@@ -83,7 +83,7 @@ ws.all('/*', async (ctx, next) => {
     if (ctx.websocket.readyState === 1) {
       ctx.websocket.send(JSON.stringify(dataCache))
     } else {
-      console.log('send failed, readyState: ', ctx.websocket.readyState)
+      // console.log('not send, readyState: ', ctx.websocket.readyState)
     }
   }, 1000 * 60 * 3.2)
 })

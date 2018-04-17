@@ -76,14 +76,14 @@ export default {
     connect () {
       let wsUrl = window.location.hostname === 'localhost'
         ? 'ws://localhost:8443'
-        : 'wss://' + window.location.host + ':8443'
+        : 'wss://coin.bch123.org:8443'
       const ws = new WebSocket(wsUrl)
       this.$bar.start()
       ws.onopen = (event) => {
         console.log('websocket on open')
       }
       ws.onmessage = (message) => {
-        console.log('ws get msg', JSON.parse(message.data))
+        console.log('ws get msg')
         this.loading = false
         this.setData(JSON.parse(message.data))
         this.lastUpdated = new Date()
