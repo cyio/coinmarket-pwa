@@ -72,6 +72,32 @@ export default {
     },
     setChange () {
       localStorage.setItem('change', this.selectedChange)
+    },
+    connect () {
+      let wsUrl = window.location.hostname === 'localhost'
+        ? 'ws://localhost:8443'
+        : 'wss://' + window.location.host + ':8443'
+      const ws = new WebSocket(wsUrl)
+      this.$bar.start()
+      ws.onopen = (event) => {
+        console.log('websocket on open')
+      }
+      ws.onmessage = (message) => {
+        console.log('ws get msg', JSON.parse(message.data))
+        this.loading = false
+        this.setData(JSON.parse(message.data))
+        this.lastUpdated = new Date()
+      }
+      ws.onclose = (e) => {
+        console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason)
+        setTimeout(() => {
+          this.connect()
+        }, 1000)
+      }
+      ws.onerror = (err) => {
+        console.error('Socket encountered error: ', err.message, 'Closing socket')
+        ws.close()
+      }
     }
   },
   computed: {
@@ -109,22 +135,7 @@ export default {
     if (change) {
       this.selectedChange = change
     }
-    let wsUrl = 'wss://' + window.location.host + ':8443'
-    if (window.location.hostname === 'localhost') {
-      wsUrl = 'ws://localhost:8443'
-    }
-    const ws = new WebSocket(wsUrl)
-    this.$bar.start()
-    ws.onopen = (event) => {
-      this.$bar.finish()
-      console.log('websocket on open')
-    }
-    ws.onmessage = (message) => {
-      console.log('ws msg', JSON.parse(message.data))
-      this.loading = false
-      this.setData(JSON.parse(message.data))
-      this.lastUpdated = new Date()
-    }
+    this.connect()
   },
   mounted () {
   }
