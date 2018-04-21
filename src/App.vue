@@ -2,11 +2,11 @@
 <div id="app">
   <header>
     <div class="title link" @click="go({path: '/'})">
-        CoinMarket
-        <span class="sub">Lite</span>
+      CoinMarket
+      <span class="sub">Lite</span>
     </div>
   </header>
-  <div class="container">
+  <div class="main">
     <keep-alive>
       <router-view v-if="$route.meta.keepAlive" />
     </keep-alive>
@@ -110,14 +110,14 @@ img, embed, iframe {
 }
 
 @media only screen and (min-width: 900px) {
-  #app .container {
-		width: 450px;
-		border: 1px solid #efefef;
+  #app .main {
+    width: 450px;
+    border: 1px solid #efefef;
   }
-  #app .container,
-  #app header .title {
-		margin-left: 150px;
-  }
+  #app .main,
+    #app header .title {
+      margin-left: 150px;
+    }
 }
 
 .link {
@@ -159,4 +159,18 @@ img, embed, iframe {
 		opacity: 1;
 	}
 }
+  .store-name {
+    // margin-top: -35px!important;
+  }
+  .btn-primary {
+    background-color: orange!important;
+    border-color: #eee!important;
+  }
+  .btn-primary:hover {
+    background-color: orange!important;
+    border-color: #eee!important;
+  }
+  .table td, .table th {
+    padding: 0!important;
+  }
 </style>

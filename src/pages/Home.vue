@@ -10,6 +10,12 @@
   </div>
   <div class="filter">
     <input ref="search" type="email" v-model="keyword" placeholder="即时过滤" />
+		<div id="checkout" 
+      data-storename="支持开发者" 
+      data-storeicon="https://bch123.org/static/img/icons/favicon.png"
+      data-key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiNWQyZDhhYjQtNTI5Ni00NjZhLThhZWQtY2EwZjhiMDc5NDZiIiwiaWF0IjoxNTIzODY1ODg0LCJleHAiOjE1NTU0MjM0ODR9.4W9aJnQF_HU__ueOjedpF56SsTvpe8_nkBoLd8xqDXo"
+      :data-amount="customAmount">
+		</div>
   </div>
   <table class="table" id="products">
     <tbody>
@@ -65,6 +71,7 @@ export default {
       showError: false,
       loading: true,
       keyword: '',
+      customAmount: 0.1,
     }
   },
   methods: {
@@ -219,6 +226,9 @@ export default {
   .change {
     width: .5rem;
   }
+  .h-rank {
+    width: 10px;
+  }
   .h-name {
     width: .55rem;
   }
@@ -230,6 +240,8 @@ export default {
   }
   .filter {
     padding: 2px 5px;
+    display: flex;
+    justify-content: space-between;
   }
   .filter input {
     border: 1px solid #ddd;
