@@ -1,24 +1,18 @@
-<template>
-<div id="app">
-  <header>
-    <div class="title link" @click="go({path: '/'})">
-      CoinMarket
-      <span class="sub">Lite</span>
-    </div>
-    <div class="loading" v-if="loading">
-      <Spinner line-fg-color="#32669a"></Spinner>
-    </div>
-  </header>
-  <div class="main">
-    <keep-alive>
-      <router-view v-if="$route.meta.keepAlive" />
-    </keep-alive>
-    <transition name="fade"  v-if="!$route.meta.keepAlive">
-      <router-view />
-    </transition>
-  </div>
-  <footer><a href="https://github.com/cyio/coinmarket-pwa" target="_blank">cyio/coinmarket-pwa</a></footer>
-</div>
+<template lang="pug">
+#app
+  header
+    .title.link(@click="go({path: '/'})")
+      | CoinMarket
+      span.sub Lite
+    .loading(v-if="loading")
+      spinner(line-fg-color="#32669a")
+  .main
+    keep-alive
+      router-view(v-if="$route.meta.keepAlive")
+    transition(name="fade", v-if="!$route.meta.keepAlive")
+      router-view
+  footer
+    a(href="https://github.com/cyio/coinmarket-pwa", target="_blank") cyio/coinmarket-pwa
 </template>
 
 <script>

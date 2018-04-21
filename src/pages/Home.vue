@@ -1,53 +1,40 @@
-<template>
-<div class="home-view">
-  <div class="info">
-    {{$t('list.totalMarketCap')}}:
-    <span v-if="!loading">{{totalMarketCap}}</span> /
-    {{$t('list.btcDominance')}}:
-    <span v-if="!loading">{{global.bitcoin_percentage_of_market_cap}}%</span> /
-    {{$t('list.updateTime')}}：
-    <span v-if="!loading">{{ lastUpdated | timeFormat(locale) }}</span>
-  </div>
-  <div class="filter">
-    <input ref="search" type="email" v-model="keyword" :placeholder="$t('list.instantFilter')" />
-		<div id="checkout" 
-      :data-storename="$t('list.supportDeveloper')"
-      data-storeicon="https://bch123.org/static/img/icons/favicon.png"
-      data-key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiNWQyZDhhYjQtNTI5Ni00NjZhLThhZWQtY2EwZjhiMDc5NDZiIiwiaWF0IjoxNTIzODY1ODg0LCJleHAiOjE1NTU0MjM0ODR9.4W9aJnQF_HU__ueOjedpF56SsTvpe8_nkBoLd8xqDXo"
-      :data-amount="customAmount">
-		</div>
-  </div>
-  <table class="coin-table" id="products">
-    <tbody>
-      <tr class="headorder">
-        <th class="h-rank f-left">{{$t('list.rank')}}</th>
-        <th class="h-name f-left">{{$t('list.symbol')}}</th>
-        <th class="h-price f-left">{{$t('list.price')}}
-          <select v-model="selectedUnit" @change="setUnit">
-            <option value="usd">$</option>
-            <option value="cny">¥</option>
-            <option value="btc">Bits</option>
-          </select>
-        </th>
-        <th class="h-change f-left">{{$t('list.change')}}
-          <select v-model="selectedChange" @change="setChange">
-            <option value="24h">24H</option>
-            <option value="1h">1H</option>
-            <option value="7d">7D</option>
-          </select>
-        </th>
-      </tr>
-      <div v-if="showError"></div>
-      <tr v-if="!loading" v-for="item in filterTickers" class="item">
-        <td><span>{{item.rank}}</span></td>
-        <td><span>{{item.symbol}}</span></td>
-        <td class="align-right"><span>{{item[`price_${selectedUnit}`] | format(selectedUnit)}}</span></td>
-        <td class="align-right"><span v-bind:class="{'up': item[`percent_change_${selectedChange}`] >= 0, 'down': item[`percent_change_${selectedChange}`] < 0}" class="change">{{item[`percent_change_${selectedChange}`] | format}}%</span></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-</div>
+<template lang="pug">
+.home-view
+	.info
+		| {{$t('list.totalMarketCap')}}:
+		span(v-if='!loading') {{totalMarketCap}} /  {{$t('list.btcDominance')}}:
+		span(v-if='!loading') {{global.bitcoin_percentage_of_market_cap}}% / {{$t('list.updateTime')}}：
+		span(v-if='!loading') {{ lastUpdated | timeFormat(locale) }}
+	.filter
+		input(ref='search', type='email', v-model='keyword', :placeholder="$t('list.instantFilter')")
+		#checkout(:data-storename="$t('list.supportDeveloper')", data-storeicon='https://bch123.org/static/img/icons/favicon.png', data-key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiNWQyZDhhYjQtNTI5Ni00NjZhLThhZWQtY2EwZjhiMDc5NDZiIiwiaWF0IjoxNTIzODY1ODg0LCJleHAiOjE1NTU0MjM0ODR9.4W9aJnQF_HU__ueOjedpF56SsTvpe8_nkBoLd8xqDXo', :data-amount='customAmount')
+	table#products.coin-table
+		tbody
+			tr.headorder
+				th.h-rank.f-left {{$t('list.rank')}}
+				th.h-name.f-left {{$t('list.symbol')}}
+				th.h-price.f-left
+					| {{$t('list.price')}}
+					select(v-model='selectedUnit', @change='setUnit')
+						option(value='usd') $
+						option(value='cny') ¥
+						option(value='btc') Bits
+				th.h-change.f-left
+					| {{$t('list.change')}}
+					select(v-model='selectedChange', @change='setChange')
+						option(value='24h') 24H
+						option(value='1h') 1H
+						option(value='7d') 7D
+			div(v-if='showError')
+			tr.item(v-if='!loading', v-for='item in filterTickers')
+				td
+					span {{item.rank}}
+				td
+					span {{item.symbol}}
+				td.align-right
+					span {{item[`price_${selectedUnit}`] | format(selectedUnit)}}
+				td.align-right
+					span.change(v-bind:class="{'up': item[`percent_change_${selectedChange}`] >= 0, 'down': item[`percent_change_${selectedChange}`] < 0}") {{item[`percent_change_${selectedChange}`] | format}}%
 </template>
 
 <script>
