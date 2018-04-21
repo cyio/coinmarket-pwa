@@ -9,7 +9,7 @@ Vue.config.productionTip = false
 Vue.use(VueI18n)
 
 const shared = {
-  isZh: /zh/.test(window.navigator.language)
+  isZh: /zh/.test(window.navigator.language),
 }
 
 const translations = {
@@ -22,8 +22,10 @@ const translations = {
       change: '涨跌',
       error: '请求超时，请稍后刷新重试',
       totalMarketCap: '总市值',
-      btcDominance: 'BTC占比'
-    }
+      btcDominance: 'BTC占比',
+      instantFilter: '即时过滤',
+      supportDeveloper: '支持开发者',
+    },
   },
   en: {
     list: {
@@ -34,24 +36,26 @@ const translations = {
       change: 'Change',
       error: 'Timeout, please retry',
       totalMarketCap: 'Market Cap',
-      btcDominance: 'BTC Dominance'
-    }
-  }
+      btcDominance: 'BTC Dominance',
+      instantFilter: 'instant filter symbol',
+      supportDeveloper: 'Support Developer',
+    },
+  },
 }
 
 const i18n = new VueI18n({
   locale: shared.isZh ? 'zh' : 'en',
-  messages: translations
+  messages: translations,
 })
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   data: {
-    shared
+    shared,
   },
   router,
   i18n,
   template: '<App/>',
-  components: { App }
+  components: { App },
 })

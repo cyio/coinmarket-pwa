@@ -9,9 +9,9 @@
     <span v-if="!loading">{{ lastUpdated | timeFormat(locale) }}</span>
   </div>
   <div class="filter">
-    <input ref="search" type="email" v-model="keyword" placeholder="即时过滤" />
+    <input ref="search" type="email" v-model="keyword" :placeholder="$t('list.instantFilter')" />
 		<div id="checkout" 
-      data-storename="支持开发者" 
+      :data-storename="$t('list.supportDeveloper')"
       data-storeicon="https://bch123.org/static/img/icons/favicon.png"
       data-key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiNWQyZDhhYjQtNTI5Ni00NjZhLThhZWQtY2EwZjhiMDc5NDZiIiwiaWF0IjoxNTIzODY1ODg0LCJleHAiOjE1NTU0MjM0ODR9.4W9aJnQF_HU__ueOjedpF56SsTvpe8_nkBoLd8xqDXo"
       :data-amount="customAmount">
