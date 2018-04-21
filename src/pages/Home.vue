@@ -1,40 +1,50 @@
 <template lang="pug">
 .home-view
-	.info
-		| {{$t('list.totalMarketCap')}}:
-		span(v-if='!loading') {{totalMarketCap}} /  {{$t('list.btcDominance')}}:
-		span(v-if='!loading') {{global.bitcoin_percentage_of_market_cap}}% / {{$t('list.updateTime')}}：
-		span(v-if='!loading') {{ lastUpdated | timeFormat(locale) }}
-	.filter
-		input(ref='search', type='email', v-model='keyword', :placeholder="$t('list.instantFilter')")
-		#checkout(:data-storename="$t('list.supportDeveloper')", data-storeicon='https://bch123.org/static/img/icons/favicon.png', data-key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiNWQyZDhhYjQtNTI5Ni00NjZhLThhZWQtY2EwZjhiMDc5NDZiIiwiaWF0IjoxNTIzODY1ODg0LCJleHAiOjE1NTU0MjM0ODR9.4W9aJnQF_HU__ueOjedpF56SsTvpe8_nkBoLd8xqDXo', :data-amount='customAmount')
-	table#products.coin-table
-		tbody
-			tr.headorder
-				th.h-rank.f-left {{$t('list.rank')}}
-				th.h-name.f-left {{$t('list.symbol')}}
-				th.h-price.f-left
-					| {{$t('list.price')}}
-					select(v-model='selectedUnit', @change='setUnit')
-						option(value='usd') $
-						option(value='cny') ¥
-						option(value='btc') Bits
-				th.h-change.f-left
-					| {{$t('list.change')}}
-					select(v-model='selectedChange', @change='setChange')
-						option(value='24h') 24H
-						option(value='1h') 1H
-						option(value='7d') 7D
-			div(v-if='showError')
-			tr.item(v-if='!loading', v-for='item in filterTickers')
-				td
-					span {{item.rank}}
-				td
-					span {{item.symbol}}
-				td.align-right
-					span {{item[`price_${selectedUnit}`] | format(selectedUnit)}}
-				td.align-right
-					span.change(v-bind:class="{'up': item[`percent_change_${selectedChange}`] >= 0, 'down': item[`percent_change_${selectedChange}`] < 0}") {{item[`percent_change_${selectedChange}`] | format}}%
+  .info
+    | {{$t('list.totalMarketCap')}}:
+    span(v-if='!loading') {{marketCap(global.total_market_cap_cny, global.total_market_cap_usd)}} /  {{$t('list.btcDominance')}}:
+    span(v-if='!loading') {{global.bitcoin_percentage_of_market_cap}}% / {{$t('list.updateTime')}}：
+    span(v-if='!loading') {{ lastUpdated | timeFormat(locale) }}
+  .filter
+    input(ref='search', type='email', v-model='keyword', :placeholder="$t('list.instantFilter')")
+    #checkout(:data-storename="$t('list.supportDeveloper')", data-storeicon='https://bch123.org/static/img/icons/favicon.png', data-key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiNWQyZDhhYjQtNTI5Ni00NjZhLThhZWQtY2EwZjhiMDc5NDZiIiwiaWF0IjoxNTIzODY1ODg0LCJleHAiOjE1NTU0MjM0ODR9.4W9aJnQF_HU__ueOjedpF56SsTvpe8_nkBoLd8xqDXo', :data-amount='customAmount')
+  table.table-left
+    tbody
+      tr.headorder
+        th.h-rank.f-left {{$t('list.rank')}}
+        th.h-name.f-left {{$t('list.symbol')}}
+      tr.item(v-if='!loading', v-for='item in filterTickers')
+        td
+          span {{item.rank}}
+        td
+          span {{item.symbol}}
+  .table-scroll-x
+    .scroll-content
+      table
+        tbody
+          tr.headorder
+            th.h-price.f-left
+              .inner-row
+                div {{$t('list.price')}}
+                select(v-model='selectedUnit', @change='setUnit')
+                  option(value='usd') $
+                  option(value='cny') ¥
+                  option(value='btc') Bits
+            th.h-change.f-left
+              | {{$t('list.change')}}
+              select(v-model='selectedChange', @change='setChange')
+                option(value='24h') 24H
+                option(value='1h') 1H
+                option(value='7d') 7D
+            th.h-marketcap
+              div {{$t('list.marketCap')}}
+          tr.item(v-if='!loading', v-for='item in filterTickers')
+            td.align-right
+              span {{item[`price_${selectedUnit}`] | format(selectedUnit)}}
+            td.align-right
+              span.change(v-bind:class="{'up': item[`percent_change_${selectedChange}`] >= 0, 'down': item[`percent_change_${selectedChange}`] < 0}") {{item[`percent_change_${selectedChange}`] | format}}%
+            td.align-right
+              span {{marketCap(item.market_cap_cny, item.market_cap_usd)}}
 </template>
 
 <script>
@@ -97,22 +107,22 @@ export default {
         console.error('Socket encountered error: ', err.message, 'Closing socket')
         ws.close()
       }
-    }
-  },
-  computed: {
-    locale () {
-      return this.$root.$data.shared.isZh ? 'zh_CN' : 'en_US'
     },
-    totalMarketCap () {
+    marketCap (valueCny, valueUsd) {
       const caps = {
-        'cny': '¥' + numeral(this.global.total_market_cap_cny / (10 ** 8)).format('0,000.00') + '亿',
-        'usd': '$' + numeral(this.global.total_market_cap_usd / (10 ** 9)).format('0,000.00') + 'B'
+        'cny': '¥' + numeral(valueCny / (10 ** 8)).format('0,000.00') + '亿',
+        'usd': '$' + numeral(valueUsd / (10 ** 9)).format('0,000.00') + 'B'
       }
       if (/cny|usd/.test(this.selectedUnit)) {
         return caps[this.selectedUnit]
       } else {
         return caps[this.$root.$data.shared.isZh ? 'cny' : 'usd']
       }
+    },
+  },
+  computed: {
+    locale () {
+      return this.$root.$data.shared.isZh ? 'zh_CN' : 'en_US'
     },
     filterTickers () {
       return this.tickers && this.tickers.filter(ticker => ticker.symbol.includes(this.keyword.trim().toUpperCase()))
@@ -125,7 +135,7 @@ export default {
     },
     timeFormat (time, locale) {
       return timeAgo.format(time, locale)
-    }
+    },
   },
   created () {
     let unit = localStorage.getItem('unit')
@@ -148,7 +158,7 @@ export default {
 
   <style scoped>
   .home-view {
-    margin: 0 auto;
+    margin: 0 .2rem;
     min-height: 500px;
   }
   .item {
@@ -178,6 +188,12 @@ export default {
     background: #e0e9f3;
     height: 2rem;
   }
+  .headorder .inner-row {
+    display: flex;
+  }
+  .headorder th {
+    text-align: center;
+  }
   .info {
 		margin: .4rem;
     color: #a2a2a2;
@@ -186,13 +202,8 @@ export default {
   .info span {
     color: var(--theme)
   }
-  .coin-table {
+  table {
     white-space: nowrap;
-  }
-  .coin-table th {
-  }
-  .coin-table td, .coin-table th {
-    text-indent: .5rem;
   }
   .align-right {
 		text-align: right;
@@ -213,16 +224,19 @@ export default {
     width: .5rem;
   }
   .h-rank {
-    width: 10px;
+    width: 2.4rem;
   }
   .h-name {
     width: .55rem;
   }
+  .h-marketcap div {
+    width: 7rem;
+  }
   .h-change {
-    width: .7rem;
+    width: 5.8rem;
   }
   .h-price {
-    width: 1rem;
+    width: 6.5rem;
   }
   .filter {
     padding: 2px 5px;
@@ -236,5 +250,23 @@ export default {
   .filter input:focus {
     font-size: 16px;
     border-color: var(--theme);
+  }
+  .table-left {
+    float: left;
+    overflow: hidden;
+    box-shadow: 2px 0px 3px rgba(0,0,0,0.05);
+    width: 6.5rem;
+  }
+  .table-scroll-x {
+    position: relative;
+    overflow: hidden;
+  }
+  .scroll-content {
+    overflow-x: auto;
+    transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition-duration: 0ms;
+  }
+  .table-scroll-x .table-scroll-list {
+    margin-left: -140px;
   }
 </style>
