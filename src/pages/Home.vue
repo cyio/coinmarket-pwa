@@ -1,44 +1,46 @@
 <template>
 <div class="home-view">
-  <div class="list">
-    <div class="info">
-      {{$t('list.totalMarketCap')}}:
-      <span v-if="!loading">{{totalMarketCap}}</span> /
-      {{$t('list.btcDominance')}}:
-      <span v-if="!loading">{{global.bitcoin_percentage_of_market_cap}}%</span> /
-      {{$t('list.updateTime')}}：
-      <span v-if="!loading">{{ lastUpdated | timeFormat(locale) }}</span>
-    </div>
-    <table class="table" id="products">
-      <tbody>
-        <tr class="headorder">
-          <th class="h-rank f-left">{{$t('list.rank')}}</th>
-          <th class="h-name f-left">{{$t('list.symbol')}}</th>
-          <th class="h-price f-left">{{$t('list.price')}}
-            <select v-model="selectedUnit" @change="setUnit">
-              <option value="usd">$</option>
-              <option value="cny">¥</option>
-              <option value="btc">Bits</option>
-            </select>
-          </th>
-          <th class="h-change f-left">{{$t('list.change')}}
-            <select v-model="selectedChange" @change="setChange">
-              <option value="24h">24H</option>
-              <option value="1h">1H</option>
-              <option value="7d">7D</option>
-            </select>
-          </th>
-        </tr>
-        <div v-if="showError"></div>
-        <tr v-if="!loading" v-for="item in tickers" class="item">
-          <td><span>{{item.rank}}</span></td>
-          <td><span>{{item.symbol}}</span></td>
-          <td class="align-right"><span>{{item[`price_${selectedUnit}`] | format(selectedUnit)}}</span></td>
-          <td class="align-right"><span v-bind:class="{'up': item[`percent_change_${selectedChange}`] >= 0, 'down': item[`percent_change_${selectedChange}`] < 0}" class="change">{{item[`percent_change_${selectedChange}`] | format}}%</span></td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="info">
+    {{$t('list.totalMarketCap')}}:
+    <span v-if="!loading">{{totalMarketCap}}</span> /
+    {{$t('list.btcDominance')}}:
+    <span v-if="!loading">{{global.bitcoin_percentage_of_market_cap}}%</span> /
+    {{$t('list.updateTime')}}：
+    <span v-if="!loading">{{ lastUpdated | timeFormat(locale) }}</span>
   </div>
+  <div class="filter">
+    <input ref="search" type="email" v-model="keyword" placeholder="即时过滤" />
+  </div>
+  <table class="table" id="products">
+    <tbody>
+      <tr class="headorder">
+        <th class="h-rank f-left">{{$t('list.rank')}}</th>
+        <th class="h-name f-left">{{$t('list.symbol')}}</th>
+        <th class="h-price f-left">{{$t('list.price')}}
+          <select v-model="selectedUnit" @change="setUnit">
+            <option value="usd">$</option>
+            <option value="cny">¥</option>
+            <option value="btc">Bits</option>
+          </select>
+        </th>
+        <th class="h-change f-left">{{$t('list.change')}}
+          <select v-model="selectedChange" @change="setChange">
+            <option value="24h">24H</option>
+            <option value="1h">1H</option>
+            <option value="7d">7D</option>
+          </select>
+        </th>
+      </tr>
+      <div v-if="showError"></div>
+      <tr v-if="!loading" v-for="item in filterTickers" class="item">
+        <td><span>{{item.rank}}</span></td>
+        <td><span>{{item.symbol}}</span></td>
+        <td class="align-right"><span>{{item[`price_${selectedUnit}`] | format(selectedUnit)}}</span></td>
+        <td class="align-right"><span v-bind:class="{'up': item[`percent_change_${selectedChange}`] >= 0, 'down': item[`percent_change_${selectedChange}`] < 0}" class="change">{{item[`percent_change_${selectedChange}`] | format}}%</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 </div>
 </template>
 
@@ -47,7 +49,9 @@ import mixin from '@/mixin.js'
 import numeral from 'numeral'
 // import axios from 'axios'
 import Timeago from 'timeago.js'
+import MobileDetect from 'mobile-detect'
 const timeAgo = new Timeago()
+const md = new MobileDetect(window.navigator.userAgent)
 export default {
   name: 'List',
   mixins: [mixin],
@@ -59,7 +63,8 @@ export default {
       selectedChange: '24h',
       lastUpdated: new Date(),
       showError: false,
-      loading: true
+      loading: true,
+      keyword: '',
     }
   },
   methods: {
@@ -114,6 +119,9 @@ export default {
       } else {
         return caps[this.$root.$data.shared.isZh ? 'cny' : 'usd']
       }
+    },
+    filterTickers () {
+      return this.tickers && this.tickers.filter(ticker => ticker.symbol.includes(this.keyword.trim().toUpperCase()))
     }
   },
   filters: {
@@ -122,7 +130,6 @@ export default {
       return numeral(value).format('0,0.00')
     },
     timeFormat (time, locale) {
-      // return timeAgo.format(new Date(time * 1000), locale)
       return timeAgo.format(time, locale)
     }
   },
@@ -138,21 +145,24 @@ export default {
     this.connect()
   },
   mounted () {
+    if (!md.mobile()) {
+      this.$refs.search.focus()
+    }
   }
 }
 </script>
 
-  <style>
+  <style scoped>
   .home-view {
     margin: 0 auto;
     min-height: 500px;
   }
-  .list .item {
+  .item {
     position: relative;
     height: 2rem;
     line-height: 2rem;
   }
-  .list .item .link {
+  .item .link {
     color: #333;
     overflow: hidden;
     white-space: nowrap;
@@ -160,14 +170,14 @@ export default {
     text-decoration: none;
     padding: 0 .1rem;
   }
-  .list .item .link:visited {
+  .item .link:visited {
     color: #9a9a9a;
   }
-  .list .link .placeholder {
+  .link .placeholder {
     background: red;
     width: 100%;
   }
-  .list .item:nth-child(2n+1) {
+  .item:nth-child(2n+1) {
     background-color: #F5F5F5;
   }
   .headorder {
@@ -217,5 +227,16 @@ export default {
   }
   .h-price {
     width: 1rem;
+  }
+  .filter {
+    padding: 2px 5px;
+  }
+  .filter input {
+    border: 1px solid #ddd;
+    padding: 2px 5px;
+  }
+  .filter input:focus {
+    font-size: 16px;
+    border-color: var(--theme);
   }
 </style>

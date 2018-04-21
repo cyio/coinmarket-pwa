@@ -21,6 +21,7 @@
     "koa2-connect-history-api-fallback": "0.0.6",
     "leancloud-storage": "^3.4.2",
     "leanengine": "^3.0.2",
+    "mobile-detect": "^1.4.1",
     "numeral": "^2.0.6",
     "timeago.js": "^3.0.2",
     "vue": "^2.5.2",
