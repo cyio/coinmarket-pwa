@@ -56,6 +56,7 @@ import numeral from 'numeral'
 // import axios from 'axios'
 import Timeago from 'timeago.js'
 import MobileDetect from 'mobile-detect'
+import { isLocalhost } from '@/utils'
 const timeAgo = new Timeago()
 const md = new MobileDetect(window.navigator.userAgent)
 export default {
@@ -86,8 +87,8 @@ export default {
       localStorage.setItem('change', this.selectedChange)
     },
     connect () {
-      let wsUrl = window.location.hostname === 'localhost'
-        ? 'ws://localhost:8443'
+      let wsUrl = isLocalhost
+        ? `ws://${window.location.hostname}:8443`
         : 'wss://coin.bch123.org:8443'
       const ws = new WebSocket(wsUrl)
       this.$bar.start()
