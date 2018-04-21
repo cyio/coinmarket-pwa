@@ -39,7 +39,7 @@ const fetchCoinmarketcap = () => {
   return axios
     .all([
       axios.get(
-        'https://api.coinmarketcap.com/v1/ticker/?convert=CNY&limit=50',
+        'https://api.coinmarketcap.com/v1/ticker/?convert=CNY&limit=100',
       ),
       axios.get('https://api.coinmarketcap.com/v1/global/?convert=CNY'),
     ])
