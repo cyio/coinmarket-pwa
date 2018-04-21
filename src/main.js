@@ -10,6 +10,7 @@ Vue.use(VueI18n)
 
 const shared = {
   isZh: /zh/.test(window.navigator.language),
+  loading: true,
 }
 
 const translations = {

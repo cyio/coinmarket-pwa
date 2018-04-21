@@ -5,6 +5,9 @@
       CoinMarket
       <span class="sub">Lite</span>
     </div>
+    <div class="loading" v-if="loading">
+      <Spinner line-fg-color="#32669a"></Spinner>
+    </div>
   </header>
   <div class="main">
     <keep-alive>
@@ -59,15 +62,17 @@ body {
 }
 
 header {
-  z-index: 1000;
+  width: 100%;
+  // z-index: 1000;
   background-color: #fff;
   color: var(--theme);
-  box-shadow: 0 0 4px #657786;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 1.5rem;
-  height: var(--headerHeight)
+  height: var(--headerHeight);
+  position: relative;
+  border: 1px solid #efefef;
 }
 
 header .title {
@@ -110,14 +115,11 @@ img, embed, iframe {
 }
 
 @media only screen and (min-width: 900px) {
-  #app .main {
-    width: 450px;
-    border: 1px solid #efefef;
-  }
   #app .main,
-    #app header .title {
-      margin-left: 150px;
-    }
+  #app header {
+    width: 450px;
+    margin-left: 150px;
+  }
 }
 
 .link {
@@ -170,7 +172,13 @@ img, embed, iframe {
     background-color: orange!important;
     border-color: #eee!important;
   }
-  .table td, .table th {
-    padding: 0!important;
+  .loading {
+    // margin-top: 50%;
+    text-align: center;
+    line-height: 2.5rem;
+    position: absolute;
+    top: .5rem;
+    right: 1rem;
+    z-index: 9999;
   }
 </style>

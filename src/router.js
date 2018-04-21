@@ -1,17 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Spinner from 'vue-simple-spinner'
 import Home from '@/pages/Home'
-import ProgressBar from '@/components/ProgressBar'
-
-// global progress bar
-const bar = Vue.prototype.$bar = new Vue(ProgressBar).$mount()
-document.body.appendChild(bar.$el)
 
 Vue.use(Router)
+Vue.component('Spinner', Spinner)
 
 export default new Router({
   mode: 'history',
-  scrollBehavior (to, from, savedPosition) {
+  scrollBehavior(to, from, savedPosition) {
     // console.log('scroll', to.path, from.path, savedPosition)
     if (savedPosition) {
       setTimeout(() => {
@@ -30,8 +27,8 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home,
-      meta: { keepAlive: true }
+      meta: { keepAlive: true },
     },
-    { path: '*', redirect: '/' }
-  ]
+    { path: '*', redirect: '/' },
+  ],
 })

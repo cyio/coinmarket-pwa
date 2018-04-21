@@ -17,7 +17,7 @@
       :data-amount="customAmount">
 		</div>
   </div>
-  <table class="table" id="products">
+  <table class="coin-table" id="products">
     <tbody>
       <tr class="headorder">
         <th class="h-rank f-left">{{$t('list.rank')}}</th>
@@ -70,7 +70,6 @@ export default {
       selectedChange: '24h',
       lastUpdated: new Date(),
       showError: false,
-      loading: true,
       keyword: '',
       customAmount: 0.1,
     }
@@ -91,13 +90,13 @@ export default {
         ? `ws://${window.location.hostname}:8443`
         : 'wss://coin.bch123.org:8443'
       const ws = new WebSocket(wsUrl)
-      this.$bar.start()
+      this.showLoading()
       ws.onopen = (event) => {
         console.log('websocket on open')
       }
       ws.onmessage = (message) => {
         console.log('ws get msg')
-        this.loading = false
+        this.hideLoading()
         this.setData(JSON.parse(message.data))
         this.lastUpdated = new Date()
       }
@@ -200,13 +199,12 @@ export default {
   .info span {
     color: var(--theme)
   }
-  .table {
-    // width: 100%;
-		white-space: nowrap;
+  .coin-table {
+    white-space: nowrap;
   }
-  .table th {
+  .coin-table th {
   }
-  .table td, .table th {
+  .coin-table td, .coin-table th {
     text-indent: .5rem;
   }
   .align-right {

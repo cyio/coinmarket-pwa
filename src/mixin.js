@@ -12,6 +12,17 @@ export default {
     },
     goBack () {
       this.$router.go(-1)
+    },
+    showLoading () {
+      this.$root.$data.shared.loading = true
+    },
+    hideLoading () {
+      this.$root.$data.shared.loading = false
+    },
+  },
+  computed: {
+    loading () {
+      return this.$root.$data.shared.loading
     }
   }
 }
