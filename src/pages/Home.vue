@@ -235,8 +235,8 @@ export default {
   .h-change {
     width: 5.8rem;
   }
-  .h-price {
-    width: 6.5rem;
+  .h-price .inner-row {
+    width: 7.1rem;
   }
   .filter {
     padding: 2px 5px;
@@ -244,11 +244,11 @@ export default {
     justify-content: space-between;
   }
   .filter input {
+    height: 1.7rem;
     border: 1px solid #ddd;
     padding: 2px 5px;
   }
   .filter input:focus {
-    font-size: 16px;
     border-color: var(--theme);
   }
   .table-left {

@@ -161,6 +161,7 @@ img, embed, iframe {
   .btn-primary {
     background-color: orange!important;
     border-color: #eee!important;
+    padding: 0 1.1rem!important;
   }
   .btn-primary:hover {
     background-color: orange!important;
