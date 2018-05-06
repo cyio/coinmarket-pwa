@@ -1,19 +1,19 @@
 <template lang="pug">
 .home-view
-  .info
+  .info(v-if='global')
     | {{$t('list.totalMarketCap')}}:
-    span(v-if='!loading') {{marketCap(global.total_market_cap_cny, global.total_market_cap_usd)}} /  {{$t('list.btcDominance')}}:
-    span(v-if='!loading') {{global.bitcoin_percentage_of_market_cap}}% / {{$t('list.updateTime')}}：
-    span(v-if='!loading') {{ lastUpdated | timeFormat(locale) }}
+    span {{marketCap(global.total_market_cap_cny, global.total_market_cap_usd)}} /  {{$t('list.btcDominance')}}:
+    span {{global.bitcoin_percentage_of_market_cap}}% / {{$t('list.updateTime')}}：
+    span {{ lastUpdated | timeFormat(locale) }}
   .filter
     input(ref='search', type='email', v-model='keyword', :placeholder="$t('list.instantFilter')")
-    #checkout(:data-storename="$t('list.supportDeveloper')", data-storeicon='https://bch123.org/static/img/icons/favicon.png', data-key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiNWQyZDhhYjQtNTI5Ni00NjZhLThhZWQtY2EwZjhiMDc5NDZiIiwiaWF0IjoxNTIzODY1ODg0LCJleHAiOjE1NTU0MjM0ODR9.4W9aJnQF_HU__ueOjedpF56SsTvpe8_nkBoLd8xqDXo', :data-amount='customAmount')
+    // #checkout(:data-storename="$t('list.supportDeveloper')", data-storeicon='https://bch123.org/static/img/icons/favicon.png', data-key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiNWQyZDhhYjQtNTI5Ni00NjZhLThhZWQtY2EwZjhiMDc5NDZiIiwiaWF0IjoxNTIzODY1ODg0LCJleHAiOjE1NTU0MjM0ODR9.4W9aJnQF_HU__ueOjedpF56SsTvpe8_nkBoLd8xqDXo', :data-amount='customAmount')
   table.table-left
     tbody
       tr.headorder
         th.h-rank.f-left {{$t('list.rank')}}
         th.h-name.f-left {{$t('list.symbol')}}
-      tr.item(v-if='!loading', v-for='item in filterTickers')
+      tr.item(v-if='tickers', v-for='item in filterTickers')
         td
           span {{item.rank}}
         td
@@ -38,7 +38,7 @@
                 option(value='7d') 7D
             th.h-marketcap
               div {{$t('list.marketCap')}}
-          tr.item(v-if='!loading', v-for='item in filterTickers')
+          tr.item(v-if='tickers', v-for='item in filterTickers')
             td.align-right
               span {{item[`price_${selectedUnit}`] | format(selectedUnit)}}
             td.align-right
@@ -206,8 +206,9 @@ export default {
     white-space: nowrap;
   }
   .align-right {
-		text-align: right;
-		transform: translateX(-10%);
+    text-align: right;
+    transform: translateX(-5%);
+    padding-left: 10px;
   }
   .headorder .f-left {
     text-align: left;
