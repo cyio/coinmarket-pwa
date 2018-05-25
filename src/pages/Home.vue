@@ -125,7 +125,7 @@ export default {
       return this.$root.$data.shared.isZh ? 'zh_CN' : 'en_US'
     },
     filterTickers () {
-      return this.tickers && this.tickers.filter(ticker => ticker.symbol.includes(this.keyword.trim().toUpperCase()))
+      return this.tickers && this.tickers.filter(ticker => (new RegExp(this.keyword.trim().toUpperCase())).test(ticker.symbol))
     }
   },
   filters: {
